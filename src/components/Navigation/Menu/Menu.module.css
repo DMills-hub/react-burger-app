@@ -1,0 +1,10 @@
+.Menu {
+    height: 100%;
+    width: 30px;
+}
+
+@media (min-width:500px) {
+    .Menu {
+        display: none;
+    }
+}

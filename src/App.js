@@ -1,26 +1,71 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component, Fragment } from "react";
+import Layout from "./components/Layout/Layout";
+import BurgerBuilder from "./containers/BurgerBuilder/BurgerBuilder";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import Logout from "./containers/Auth/Logout/Logout";
+import { connect } from "react-redux";
+import { authCheckState } from "./store/actions/index";
+import asyncComponent from "./components/hoc/asyncComponent/asyncComponent";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const asyncCheckout = asyncComponent(() => {
+  return import("./containers/Checkout/Checkout");
+});
+
+const asyncOrders = asyncComponent(() => {
+  return import("./containers/Orders/Orders");
+});
+
+const asyncAuth = asyncComponent(() => {
+  return import("./containers/Auth/Auth");
+});
+
+class App extends Component {
+  componentDidMount() {
+    this.props.onAutoSignIn();
+  }
+
+  render() {
+    let routes = (
+      <Fragment>
+        <Route path="/" exact component={BurgerBuilder} />
+        <Route path="/auth" component={asyncAuth} />
+        <Redirect to="/" />
+      </Fragment>
+    );
+
+    if (this.props.isAuth) {
+      routes = (
+        <Fragment>
+          <Route path="/orders" component={asyncOrders} />
+          <Route path="/" exact component={BurgerBuilder} />
+          <Route path="/checkout" component={asyncCheckout} />
+          <Route path="/logout" component={Logout} />
+          <Route path="/auth" component={asyncAuth} />
+          <Redirect to="/" />
+        </Fragment>
+      );
+    }
+
+    return (
+      <div className="App">
+        <Router>
+          <Layout>{routes}</Layout>
+        </Router>
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    isAuth: state.auth.token !== null,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAutoSignIn: () => dispatch(authCheckState()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
