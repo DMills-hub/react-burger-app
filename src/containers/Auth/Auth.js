@@ -45,7 +45,9 @@ class Auth extends Component {
 
   componentDidMount() {
     if (!this.props.building && this.props.authRedirectPath === "/") {
-      this.props.onSetRedirectPath();
+      this.props.onSetRedirectPath('/');
+    } else {
+      this.props.onSetRedirectPath('/checkout')
     }
   }
 
@@ -112,6 +114,7 @@ class Auth extends Component {
     }
     let redirect = null;
     if (this.props.isAuth) {
+      console.log('here')
       redirect = <Redirect to={this.props.authRedirectPath} />;
     }
 
@@ -135,7 +138,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onAuth: (email, password, isSignUp) =>
       dispatch(auth(email, password, isSignUp)),
-    onSetRedirectPath: () => dispatch(setAuthRedirectPath("/")),
+    onSetRedirectPath: (path) => dispatch(setAuthRedirectPath(path)),
   };
 };
 

@@ -27,8 +27,8 @@ class App extends Component {
   render() {
     let routes = (
       <Fragment>
-        <Route path="/" exact component={BurgerBuilder} />
         <Route path="/auth" component={asyncAuth} />
+        <Route path="/" exact component={BurgerBuilder} />
         <Redirect to="/" />
       </Fragment>
     );
@@ -37,10 +37,10 @@ class App extends Component {
       routes = (
         <Fragment>
           <Route path="/orders" component={asyncOrders} />
-          <Route path="/" exact component={BurgerBuilder} />
+          <Route path="/auth" component={asyncAuth} />
           <Route path="/checkout" component={asyncCheckout} />
           <Route path="/logout" component={Logout} />
-          <Route path="/auth" component={asyncAuth} />
+          <Route path="/" exact component={BurgerBuilder} />
           <Redirect to="/" />
         </Fragment>
       );
